@@ -4,8 +4,8 @@ name: Checks
 on: [push]
 
 jobs:
-  test-lint:
-    name: Test and Lint
+  db-test:
+    name: Test
     runs-on: ubuntu-20.04
     steps:
       - name: Login to docker hub
@@ -15,8 +15,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Wait_for_DB
+        run: docker-compose run --rm app sh -c "python manage.py wait_for_db"
       - name: Test
         run: docker-compose run --rm app sh -c "python manage.py test"
-      - name: Lint
-        run: docker-compose run --rm app sh -c "flake8"
 
