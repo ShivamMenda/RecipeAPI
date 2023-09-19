@@ -41,4 +41,5 @@ class UserAdminManager(UserAdmin):
 
 
 admin.site.register(models.User,UserAdminManager)
+admin.site.register(models.Recipe)
 

@@ -4,6 +4,8 @@ Tests for models.
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+from core.models import Recipe
+
 class ModelTests(TestCase):
     """Test models"""
 
@@ -30,10 +32,22 @@ class ModelTests(TestCase):
     def test_new_user_without_email(self):
         """Test email required"""
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user("","test123")
+            get_user_model().objects.create_user("","test123") # type: ignore
     
     def test_create_superuser(self):
         """Test creating superuser"""
-        user=get_user_model().objects.create_superuser('test@example.com','test123')
+        user=get_user_model().objects.create_superuser('test@example.com','test123') # type: ignore
         self.assertTrue(user.is_superuser)
-        self.assertTrue(user.is_staff)                
+        self.assertTrue(user.is_staff)  
+
+    # A test for the recipe model only for authenticated users
+    def test_recipe_model(self):
+        """Test recipe model"""
+        recipe=Recipe.objects.create(
+            user=get_user_model().objects.create_user('test@example.com','test123'), # type: ignore
+            title='Steak and mushroom sauce',
+            time_minutes=5,
+            price=5.00
+        )
+        self.assertEqual(str(recipe),recipe.title)
+                  
