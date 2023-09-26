@@ -1,7 +1,7 @@
 from rest_framework import viewsets,mixins 
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from core.models import Recipe,Tag
+from core.models import Recipe,Tag,Ingredient
 from recipe import serializers
 
 
@@ -34,8 +34,19 @@ class TagViewSet(mixins.UpdateModelMixin,mixins.DestroyModelMixin,mixins.ListMod
     def get_queryset(self):
         """Show only tags for the current auth user"""
         return self.queryset.filter(user=self.request.user).order_by('-id')
+
+
+class IngredientViewSet(mixins.DestroyModelMixin,mixins.UpdateModelMixin,mixins.ListModelMixin,viewsets.GenericViewSet):
+    serializer_class=serializers.IngredientSerializer
+    queryset=Ingredient.objects.all()
+    authentication_classes=[TokenAuthentication]
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+        """Show only tags for the current auth user"""
+        return self.queryset.filter(user=self.request.user).order_by('-name')
+
     
-        
+
     
     
     
